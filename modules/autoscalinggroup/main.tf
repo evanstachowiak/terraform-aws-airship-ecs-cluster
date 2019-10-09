@@ -1,4 +1,7 @@
-data "aws_region" "_" {
+data "aws_region" "_" {}
+
+data "aws_subnet" "selected" {
+  id = var.subnet_ids[0]
 }
 
 locals {
@@ -19,6 +22,21 @@ data "template_file" "cloud_config_amazon" {
   }
 }
 
+resource "aws_security_group" "ecs_cluster_asg" {
+  count = var.create ? 1 : 0
+
+  vpc_id      = data.aws_subnet.selected.vpc_id
+  name        = "${var.name}-asg-sg"
+  description = "ECS EC2 cluster asg security group"
+
+  tags = {
+    Name        = "${var.name} ${terraform.workspace} asg sg"
+    service     = var.name
+    environment = terraform.workspace
+  }
+}
+
+
 resource "aws_launch_template" "launch_template" {
   count = var.create ? 1 : 0
 
@@ -27,7 +45,7 @@ resource "aws_launch_template" "launch_template" {
   image_id               = data.aws_ami.ecs_ami.id
   instance_type          = var.cluster_properties["ec2_instance_type"]
   key_name               = var.cluster_properties["ec2_key_name"]
-  vpc_security_group_ids = var.vpc_security_group_ids
+  vpc_security_group_ids = concat(var.vpc_security_group_ids, [aws_security_group.ecs_cluster_asg[0].id])
   user_data              = base64encode(data.template_file.cloud_config_amazon.rendered)
 
   iam_instance_profile {
