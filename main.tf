@@ -57,3 +57,14 @@ module "ecs_instance_scaling" {
   ecs_instance_scaling_properties  = var.ecs_instance_scaling_properties
 }
 
+#
+# vpc creates the necessary VPC endpoints and security groups
+# for the instances to communicate with the ECS service
+#
+module "vpc" {
+  source     = "./modules/vpc/"
+  name       = var.name
+  create     = var.create_vpc && var.create
+  asg_sg     = module.autoscalinggroup.asg_sg
+  subnet_ids = var.subnet_ids
+}

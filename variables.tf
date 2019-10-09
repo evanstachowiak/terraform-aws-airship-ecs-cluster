@@ -21,6 +21,12 @@ variable "create_autoscalinggroup" {
   default     = true
 }
 
+variable "create_vpc" {
+  type        = bool
+  description = "Are we creating a VPC endpoints"
+  default     = false
+}
+
 variable "ecs_instance_scaling_create" {
   type        = bool
   default     = false
