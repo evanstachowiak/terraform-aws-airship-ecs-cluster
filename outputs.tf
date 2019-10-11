@@ -18,8 +18,12 @@ output "ecs_instance_role" {
   value       = module.iam.ecs_instance_role
 }
 
+output "asg" {
+  description = "asg module"
+  value       = module.autoscalinggroup
+}
+
 output "asg_name" {
   description = "asg_name exports the name of the autoscalinggroup if one is created"
   value       = module.autoscalinggroup.asg_name
 }
-

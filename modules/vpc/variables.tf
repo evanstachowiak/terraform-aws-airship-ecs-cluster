@@ -1,10 +1,16 @@
 locals {
   # See here for exhaustive list:
   # https://docs.aws.amazon.com/general/latest/gr/rande.html#endpoint-tables
-  vpc_endpoint_interfaces_service_short_names = ["ecr.api", "ecs", "logs", "sns"]
+  vpc_endpoint_services = ["ecr.api", "ecs", "ecs-agent", "logs", "sns"]
 }
 
 variable "create" {
+  type        = bool
+  default     = true
+  description = "Whether to create everything related"
+}
+
+variable "create_sg_per_endpoint" {
   type        = bool
   default     = true
   description = "Whether to create everything related"
