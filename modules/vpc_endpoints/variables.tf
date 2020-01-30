@@ -25,6 +25,18 @@ variable "asg_sg" {
   description = "The security group for the cluster asg."
 }
 
+variable "sg_egress_rules" {
+  type        = list(string)
+  description = "Egress rules that will be attached to the VPC endpoint security group."
+  default     = null
+}
+
+variable "sg_ingress_rules" {
+  type        = list(string)
+  description = "Ingress rules that will be attached to the VPC endpoint security group."
+  default     = null
+}
+
 variable "subnet_ids" {
   type        = list(string)
   description = "List of subnet_ids of the vpc to use."

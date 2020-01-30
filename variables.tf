@@ -21,9 +21,9 @@ variable "create_autoscalinggroup" {
   default     = true
 }
 
-variable "create_vpc" {
+variable "create_vpc_endpoints" {
   type        = bool
-  description = "Are we creating a VPC endpoints"
+  description = "Are we creating VPC endpoints"
   default     = false
 }
 
@@ -57,7 +57,7 @@ variable "vpc_id" {
 }
 
 variable "vpc_security_group_ids" {
-  type = list(string)
+  type        = list(string)
   description = "List of VPC security groups to associate"
   default     = []
 }
@@ -99,7 +99,7 @@ variable "iam_role_description" {
 }
 
 variable "enable_mixed_cluster" {
-  type = bool
+  type        = bool
   description = "Create a mixed instance ASG, using the options from 'mixed_cluster_instances_distribution' and 'mixed_cluster_launch_template_override'"
   default     = false
 }
@@ -120,7 +120,7 @@ EOF
 }
 
 variable "mixed_cluster_launch_template_override" {
-  type = list(map(string))
+  type        = list(map(string))
   description = <<EOF
 List of nested arguments provides the ability to specify multiple instance types. 
 This will override the same parameter in the launch template. For on-demand instances, 
@@ -141,7 +141,7 @@ EOF
 }
 
 variable "enable_detailed_monitoring" {
-  type = bool
+  type        = bool
   description = <<EOF
 Data is available in 1-minute periods for an additional cost. To get this level of data, you must specifically enable it for the instance. 
 For the instances where you've enabled detailed monitoring, you can also get aggregated data across groups of similar instances.
@@ -150,5 +150,17 @@ EOF
 
 
   default = false
+}
+
+variable "vpc_endpoint_sg_egress_rules" {
+  type        = list(string)
+  description = "Egress rules that will be attached to the VPC endpoint security group."
+  default     = null
+}
+
+variable "vpc_endpoint_sg_ingress_rules" {
+  type        = list(string)
+  description = "Ingress rules that will be attached to the VPC endpoint security group."
+  default     = null
 }
 

@@ -40,13 +40,15 @@ resource "aws_security_group" "ecs_cluster_asg" {
 resource "aws_launch_template" "launch_template" {
   count = var.create ? 1 : 0
 
-  name_prefix            = "${local.name}-"
-  description            = "Template for EC2 instances used by ECS"
-  image_id               = data.aws_ami.ecs_ami.id
-  instance_type          = var.cluster_properties["ec2_instance_type"]
-  key_name               = var.cluster_properties["ec2_key_name"]
-  vpc_security_group_ids = concat(var.vpc_security_group_ids, [aws_security_group.ecs_cluster_asg[0].id])
-  user_data              = base64encode(data.template_file.cloud_config_amazon.rendered)
+  name_prefix                          = "${local.name}-"
+  description                          = "Template for EC2 instances used by ECS"
+  disable_api_termination              = lookup(var.cluster_properties, "disable_api_termination", null)
+  image_id                             = data.aws_ami.ecs_ami.id
+  instance_initiated_shutdown_behavior = lookup(var.cluster_properties, "instance_initiated_shutdown_behavior", null)
+  instance_type                        = var.cluster_properties["ec2_instance_type"]
+  key_name                             = var.cluster_properties["ec2_key_name"]
+  vpc_security_group_ids               = concat(var.vpc_security_group_ids, [aws_security_group.ecs_cluster_asg[0].id])
+  user_data                            = base64encode(data.template_file.cloud_config_amazon.rendered)
 
   iam_instance_profile {
     arn = var.iam_instance_profile
@@ -60,7 +62,7 @@ resource "aws_launch_template" "launch_template" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size           = "15"
+      volume_size           = "30"
       volume_type           = "gp2"
       delete_on_termination = true
     }
@@ -116,8 +118,8 @@ resource "aws_autoscaling_group" "homogenous" {
   max_size            = var.cluster_properties["ec2_asg_max"]
   placement_group     = lookup(var.cluster_properties, "ec2_placement_group", "")
   vpc_zone_identifier = var.subnet_ids
-  enabled_metrics = local.asg_enabled_metrics
-  tags = local.asg_tags
+  enabled_metrics     = local.asg_enabled_metrics
+  tags                = local.asg_tags
 
   lifecycle {
     create_before_destroy = true
@@ -171,8 +173,8 @@ resource "aws_autoscaling_group" "heterogenous" {
   max_size            = var.cluster_properties["ec2_asg_max"]
   placement_group     = lookup(var.cluster_properties, "ec2_placement_group", "")
   vpc_zone_identifier = var.subnet_ids
-  enabled_metrics = local.asg_enabled_metrics
-  tags = local.asg_tags
+  enabled_metrics     = local.asg_enabled_metrics
+  tags                = local.asg_tags
   lifecycle {
     create_before_destroy = true
   }

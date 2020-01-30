@@ -75,7 +75,7 @@ module "ecs_draining" {
 module "ecs_web" {
   source = "../.."
 
-  name                   = "${terraform.workspace}-web"               # re-used as a unique identifier for the creation of different resources
+  name                   = "${terraform.workspace}-web" # re-used as a unique identifier for the creation of different resources
   vpc_id                 = "${data.aws_vpc.selected.id}"
   subnet_ids             = ["${data.aws_subnet.selected.id}"]
   vpc_security_group_ids = ["${data.aws_security_group.selected.id}"] # the security groups for the ec2 instances.

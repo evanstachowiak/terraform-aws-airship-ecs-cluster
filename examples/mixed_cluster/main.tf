@@ -52,18 +52,18 @@ resource "aws_key_pair" "main" {
 module "ecs_web" {
   source = "../.."
 
-  name                   = "${terraform.workspace}-web"               # re-used as a unique identifier for the creation of different resources
+  name                   = "${terraform.workspace}-web" # re-used as a unique identifier for the creation of different resources
   vpc_id                 = "${data.aws_vpc.selected.id}"
   subnet_ids             = ["${data.aws_subnet.selected.id}"]
   vpc_security_group_ids = ["${data.aws_security_group.selected.id}"] # the security groups for the ec2 instances.
 
   cluster_properties = {
     ec2_key_name      = "${aws_key_pair.main.key_name}"
-    ec2_instance_type = "t3.nano"                       # This is ignored when using mixed clusters ...
+    ec2_instance_type = "t3.nano" # This is ignored when using mixed clusters ...
 
     # EC2
-    ec2_asg_min   = 5     # the minimum size of the autoscaling group    
-    ec2_asg_max   = 5     # the maximum size of the autoscaling group    
+    ec2_asg_min   = 5 # the minimum size of the autoscaling group    
+    ec2_asg_max   = 5 # the maximum size of the autoscaling group    
     ec2_disk_size = 100
     ec2_disk_type = "gp2"
   }

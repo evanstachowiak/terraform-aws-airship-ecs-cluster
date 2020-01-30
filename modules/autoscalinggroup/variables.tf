@@ -51,7 +51,7 @@ variable "mixed_cluster_instances_distribution" {
 variable "mixed_cluster_launch_template_override" {
   description = "List of nested arguments provides the ability to specify multiple instance types."
   type        = list(map(string))
-//  default = []
+  //  default = []
 }
 
 variable "enable_detailed_monitoring" {
